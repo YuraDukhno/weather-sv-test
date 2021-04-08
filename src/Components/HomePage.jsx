@@ -1,6 +1,17 @@
 import axios from "axios";
 import React, { useState } from "react";
 
+// const getDaily = () => {
+//   axios
+//     .get(
+//       `http://dataservice.accuweather.com/forecasts/v1/daily/5day/215854?apikey=fm9yiw3gGHqjNhoiPGZFRUYg6HDT4XmD`
+//     )
+//     .then(res => {
+//       const data = res.data;
+//       return data.DailyForecasts;
+//     });
+// };
+
 export default function HomePage(props) {
   const [cities, setCities] = useState([]);
   const [input, setInput] = useState("Tel Aviv");
@@ -10,8 +21,15 @@ export default function HomePage(props) {
     setInput(item.target.value);
   };
 
-  // const getCity = () => {
-  //   let city = cities.filter(item => )
+  // const getCity = key => {
+  //   axios
+  //     .get(
+  //       `http://dataservice.accuweather.com/locations/v1/${key}?apikey=fm9yiw3gGHqjNhoiPGZFRUYg6HDT4XmD`
+  //     )
+  //     .then(res => {
+  //       const data = res.data;
+  //       console.log(data);
+  //     });
   // };
 
   // ! Load data for datalist.
@@ -19,7 +37,7 @@ export default function HomePage(props) {
     // debugger;
     axios
       .get(
-        `http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=ETvbQQgXbrE05zk9PCYq6zMGSL89MZe5&q=${input}`
+        `http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=fm9yiw3gGHqjNhoiPGZFRUYg6HDT4XmD&q=${input}`
       )
       .then(res => {
         const data = res.data;
@@ -28,6 +46,7 @@ export default function HomePage(props) {
           cities.push(data[i]);
         }
         setCities(cities);
+        setKey(cities[0].Key);
       });
   });
 
@@ -39,7 +58,7 @@ export default function HomePage(props) {
             <input
               onChange={inputHandler}
               type="search"
-              class="form-control"
+              className="form-control"
               placeholder="Type location"
               list="cities"
             />
@@ -78,9 +97,12 @@ export default function HomePage(props) {
             padding: "10px",
           }}
         >
-          <h3>{input}</h3>
+          <h3>{}</h3>
           <h4>35&deg;</h4>
-          <i class="wi wi-day-sunny display-1" style={{ margin: "15px" }}></i>
+          <i
+            className="wi wi-day-sunny display-1"
+            style={{ margin: "15px" }}
+          ></i>
           <p>Scattered Clouds</p>
         </div>
         <div>
@@ -93,26 +115,17 @@ export default function HomePage(props) {
               padding: "0",
             }}
           >
-            <li>
-              <p>Sun</p>
-              <span>35&deg;</span>
-            </li>
-            <li>
-              <p>Mon</p>
-              <span>35&deg;</span>
-            </li>
-            <li>
-              <p>Tue</p>
-              <span>35&deg;</span>
-            </li>
-            <li>
-              <p>Wed</p>
-              <span>35&deg;</span>
-            </li>
-            <li>
-              <p>Tue</p>
-              <span>35&deg;</span>
-            </li>
+            {props.daily.map(item => {
+              const { Temperature, Date } = item;
+              return (
+                <li style={{ textAlign: "center", padding: "5px" }}>
+                  <p>{Date}</p>
+                  <span>Max: {Temperature.Maximum.Value - 32}&deg;</span>
+                  <br />
+                  <span>Min: {Temperature.Minimum.Value - 32}&deg;</span>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </main>
