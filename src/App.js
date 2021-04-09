@@ -1,84 +1,86 @@
 import React, { useState, useEffect } from "react";
+import { get5dayDailyForecast } from "./API";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Favorites from "./Components/Favorites";
+import HomePage from "./Components/HomePage"
+import Header from "./Components/Header";
 import "./App.css";
-import HomePage from "./Components/HomePage";
 import "weather-icons/css/weather-icons.css";
-import axios from "axios";
 
-const api = "fm9yiw3gGHqjNhoiPGZFRUYg6HDT4XmD";
 
- class App extends React.Component {
-   constructor() {
-     super();
-   }
+class App extends React.Component {
+  state = {
+    daily: [],
+    favorites: [],
+    currCity: {},
+  };
 
-   state = {
-     daily: [],
-   };
+  // ! Get daily forecast when component is mounted.
+  componentDidMount() {
+    this.getDaily();
+  }
 
-   componentDidMount() {
-     this.getDaily();
-   }
+  // ! Get daily forecast
+  getDaily = async ({ id, label } = { id: "215854", label: "Tel Aviv" }) => {
+    const data = await get5dayDailyForecast(id);
+    this.setState({
+      daily: data.DailyForecasts,
+      currCity: { id, label },
+    });
+  };
 
-   getDaily = async () => {
-     const api_call = await fetch(
-       `http://dataservice.accuweather.com/forecasts/v1/daily/5day/215854?apikey=fm9yiw3gGHqjNhoiPGZFRUYg6HDT4XmD`
-     );
+  // ! Add to favorite.
+  addFavorite = (location, currWeather) => {
+    const updatedFavorites = [
+      ...this.state.favorites,
+      { ...location, currWeather },
+    ];
+    this.setState({
+      favorites: updatedFavorites,
+    });
+  };
 
-     const response = await api_call.json();
-      
-     this.setState({
-       daily: response.DailyForecasts,
-     });
+  // ! Remove from favorite.
+  removeFavorite = (id) => {
+    const updatedFavorites = [...this.state.favorites].filter(
+      (favorite) => favorite.id !== id
+    );
+    this.setState({
+      favorites: updatedFavorites,
+    });
+  };
 
-   };
+  render() {
+    return (
+      <Router>
+        <div className="App">
+          <Header />
+          <div className="auth-wrapper">
+            <div className="auth-inner">
+              <Switch>
+                <Route exact path="/">
+                  <HomePage
+                    daily={this.state.daily}
+                    getWeather={this.getDaily}
+                    favorites={this.state.favorites}
+                    addFavorite={this.addFavorite}
+                    removeFavorite={this.removeFavorite}
+                    currCity={this.state.currCity}
+                  />
+                </Route>
+                <Route path="/favorites">
+                  <Favorites
+                    favorites={this.state.favorites}
+                    getWeather={this.getDaily}
+                  />
+                </Route>
+              </Switch>
+            </div>
+          </div>
+        </div>
+      </Router>
+    );
+  }
+}
 
-   render() {
-     return (
-       <Router>
-         <div className="App">
-           <nav className="navbar navbar-expand-lg navbar-light fixed-top">
-             <div className="container">
-               <Link className="navbar-brand" to={"/HomePage"}>
-                 Weather App
-               </Link>
-               <div
-                 className="collapse navbar-collapse"
-                 id="navbarTogglerDemo02"
-               >
-                 <ul className="navbar-nav ml-auto">
-                   <li className="nav-item">
-                     <Link className="nav-link" to={"/HomePage"}>
-                       Home
-                     </Link>
-                   </li>
-                   <li className="nav-item">
-                     <Link className="nav-link" to={"/Favorites"}>
-                       Favorites
-                     </Link>
-                   </li>
-                 </ul>
-               </div>
-             </div>
-           </nav>
-
-           <div className="auth-wrapper">
-             <div className="auth-inner">
-               <Switch>
-                 <Route
-                   exact
-                   path="/"
-                   component={() => <HomePage daily={this.state.daily} />}
-                 />
-                 <Route path="/favorites" component={Favorites} />
-               </Switch>
-             </div>
-           </div>
-         </div>
-       </Router>
-     );
-   }
- }
-
- export default App;
+export default App;

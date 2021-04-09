@@ -1,89 +1,82 @@
-import axios from "axios";
 import React, { useState } from "react";
+import Autocomplete from "./UI/Autocomplete";
+import { getLocations } from "../API";
 
-// const getDaily = () => {
-//   axios
-//     .get(
-//       `http://dataservice.accuweather.com/forecasts/v1/daily/5day/215854?apikey=fm9yiw3gGHqjNhoiPGZFRUYg6HDT4XmD`
-//     )
-//     .then(res => {
-//       const data = res.data;
-//       return data.DailyForecasts;
-//     });
-// };
-
-export default function HomePage(props) {
+export default function HomePage({
+  // ! props
+  daily,
+  getWeather,
+  favorites,
+  addFavorite,
+  removeFavorite,
+  currCity,
+}) {
   const [cities, setCities] = useState([]);
-  const [input, setInput] = useState("Tel Aviv");
-  const [key, setKey] = useState("");
+  const [input, setInput] = useState();
 
-  const inputHandler = item => {
-    setInput(item.target.value);
+  const [todaysForecast] = daily;
+
+  // ! Handler for search.
+  const locationSearchHandler = async e => {
+    const { value } = e.target;
+    setInput(value);
+
+    // ! if input in not empty.
+    if (value.trim()) {
+      const response = await getLocations(value);
+      // ! if response successful.
+      if (response) {
+        setCities(
+          response.data.map(location => ({
+            value: location.Key,
+            label: location.LocalizedName,
+          }))
+        );
+      }
+    }
   };
-
-  // const getCity = key => {
-  //   axios
-  //     .get(
-  //       `http://dataservice.accuweather.com/locations/v1/${key}?apikey=fm9yiw3gGHqjNhoiPGZFRUYg6HDT4XmD`
-  //     )
-  //     .then(res => {
-  //       const data = res.data;
-  //       console.log(data);
-  //     });
-  // };
-
-  // ! Load data for datalist.
-  React.useEffect(() => {
-    // debugger;
-    axios
-      .get(
-        `http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=fm9yiw3gGHqjNhoiPGZFRUYg6HDT4XmD&q=${input}`
-      )
-      .then(res => {
-        const data = res.data;
-        let cities = [];
-        for (let i = 0; i < data.length; i++) {
-          cities.push(data[i]);
-        }
-        setCities(cities);
-        setKey(cities[0].Key);
-      });
-  });
 
   return (
     <div>
       <main className="container-fluid">
-        <div class="row">
-          <div class="col">
-            <input
-              onChange={inputHandler}
-              type="search"
-              className="form-control"
+        <div className="row">
+          <div className="col">
+            <Autocomplete
               placeholder="Type location"
-              list="cities"
+              onKeyDown={locationSearchHandler}
+              options={cities}
+              onSelect={({ value, label }) => {
+                getWeather({ id: value, label });
+              }}
             />
-            <datalist type="text" id="cities">
-              {cities.map(item => {
-                return <option>{`${item.LocalizedName}`}</option>;
-              })}
-            </datalist>
           </div>
-          <div class="col">
-            <div class="col-12" style={{ display: "flex" }}>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                style={{ margin: "2px" }}
-              >
-                Add to favorites
-              </button>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                style={{ margin: "2px" }}
-              >
-                Remove from favorites
-              </button>
+          <div className="col">
+            <div className="">
+              {/* // ! Show buttons depending on whether there is a city in favorites. */}
+              {favorites.some(favorite => favorite.id === currCity.id) ? (
+                <button
+                  type="submit"
+                  className="btn btn-danger"
+                  style={{ margin: "2px" }}
+                  onClick={() => removeFavorite(currCity.id)}
+                >
+                  Remove from favorites
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="btn btn-success"
+                  style={{ margin: "2px" }}
+                  onClick={() =>
+                    addFavorite(
+                      currCity,
+                      todaysForecast.Temperature.Maximum.Value
+                    )
+                  }
+                >
+                  Add to favorites
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -97,13 +90,32 @@ export default function HomePage(props) {
             padding: "10px",
           }}
         >
-          <h3>{}</h3>
-          <h4>35&deg;</h4>
-          <i
-            className="wi wi-day-sunny display-1"
-            style={{ margin: "15px" }}
-          ></i>
-          <p>Scattered Clouds</p>
+          {/* // !  TODAY FORECAST */}
+          {todaysForecast && currCity && (
+            <React.Fragment>
+              <h2>{currCity.label}</h2>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignContent: "center",
+                  boxShadow: "2px 2px 10px",
+                  margin: "10px",
+                  padding: "5px",
+                  borderRadius: "10px",
+                }}
+              >
+                <h3 style={{ padding: "2.5px" }}>
+                  Max: {todaysForecast.Temperature.Maximum.Value - 32}&deg;
+                </h3>
+                <h3 style={{ padding: "2.5px" }}>
+                  Min: {todaysForecast.Temperature.Minimum.Value - 32}&deg;
+                </h3>
+              </div>
+              <h4>Day: {todaysForecast.Day.IconPhrase}</h4>
+              <h4>Night: {todaysForecast.Night.IconPhrase}</h4>
+            </React.Fragment>
+          )}
         </div>
         <div>
           <ul
@@ -115,11 +127,11 @@ export default function HomePage(props) {
               padding: "0",
             }}
           >
-            {props.daily.map(item => {
+            {daily.map(item => {
               const { Temperature, Date } = item;
               return (
                 <li style={{ textAlign: "center", padding: "5px" }}>
-                  <p>{Date}</p>
+                  <p>{Date.slice(0, 10)}</p>
                   <span>Max: {Temperature.Maximum.Value - 32}&deg;</span>
                   <br />
                   <span>Min: {Temperature.Minimum.Value - 32}&deg;</span>
