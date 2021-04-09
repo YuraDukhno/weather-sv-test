@@ -53,6 +53,7 @@ export default function HomePage({
           <div className="col">
             <div className="">
               {/* // ! Show buttons depending on whether there is a city in favorites. */}
+              {/* // ! Remove if there is */}
               {favorites.some(favorite => favorite.id === currCity.id) ? (
                 <button
                   type="submit"
@@ -63,6 +64,7 @@ export default function HomePage({
                   Remove from favorites
                 </button>
               ) : (
+                // ! Add if there is not.
                 <button
                   type="submit"
                   className="btn btn-success"
