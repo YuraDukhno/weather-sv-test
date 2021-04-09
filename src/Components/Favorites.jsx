@@ -13,6 +13,8 @@ export default function Favorites({ favorites, getWeather }) {
     <div>
       <h3>Favorites</h3>
       <div className="container-fluid">
+        {/* // ! Show cards depending on whether there is a city in favorites. */}
+        {/* // ! If there is a favorites. */}
         {favorites.length ? (
           <div>
             {favorites.map(favorite => (
@@ -29,6 +31,7 @@ export default function Favorites({ favorites, getWeather }) {
             ))}
           </div>
         ) : (
+          // ! If not.
           <div>No favorites added</div>
         )}
       </div>

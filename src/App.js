@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { get5dayDailyForecast } from "./API";
-import { HashRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { HashRouter as Router, Switch, Route} from "react-router-dom";
 import Favorites from "./Components/Favorites";
 import HomePage from "./Components/HomePage"
 import Header from "./Components/Header";
 import "./App.css";
-import "weather-icons/css/weather-icons.css";
 
 
 class App extends React.Component {
@@ -20,7 +19,7 @@ class App extends React.Component {
     this.getDaily();
   }
 
-  // ! Get daily forecast
+  // ! Get daily forecast id by default 215854 label by default Tel Aviv.
   getDaily = async ({ id, label } = { id: "215854", label: "Tel Aviv" }) => {
     const data = await get5dayDailyForecast(id);
     this.setState({
@@ -41,9 +40,9 @@ class App extends React.Component {
   };
 
   // ! Remove from favorite.
-  removeFavorite = (id) => {
+  removeFavorite = id => {
     const updatedFavorites = [...this.state.favorites].filter(
-      (favorite) => favorite.id !== id
+      favorite => favorite.id !== id
     );
     this.setState({
       favorites: updatedFavorites,

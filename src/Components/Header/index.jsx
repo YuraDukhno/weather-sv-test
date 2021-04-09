@@ -8,6 +8,7 @@ const Header = () => {
         <Link className="navbar-brand" to={"/"}>
           Weather App
         </Link>
+
         <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
