@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { get5dayDailyForecast } from "./API";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { HashRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Favorites from "./Components/Favorites";
 import HomePage from "./Components/HomePage"
 import Header from "./Components/Header";
