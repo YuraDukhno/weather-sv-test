@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Autocomplete from "./UI/Autocomplete";
 import { getLocations } from "../API";
+import "../Components/HomePage.css";
 
 export default function HomePage({
   // ! props
@@ -21,7 +22,7 @@ export default function HomePage({
     const { value } = e.target;
     setInput(value);
 
-    // ! if input in not empty.
+    // ! if input is not empty.
     if (value.trim()) {
       const response = await getLocations(value);
       // ! if response successful.
@@ -37,38 +38,38 @@ export default function HomePage({
   };
 
   return (
-    <div>
-      <main className="container-fluid">
-        <div className="row">
-          <div className="col">
+    <main className="main">
+      <div className="main__container container">
+        <div className="auto-complete__wrapper">
+          <div className="auto-complete">
             <Autocomplete
               placeholder="Type location"
               onKeyDown={locationSearchHandler}
               options={cities}
+              // ! getDaily from app.
               onSelect={({ value, label }) => {
                 getWeather({ id: value, label });
               }}
             />
           </div>
-          <div className="col">
-            <div className="">
+
+          <div className="auto-complete__buttons">
+            <div>
               {/* // ! Show buttons depending on whether there is a city in favorites. */}
               {/* // ! Remove if there is */}
               {favorites.some(favorite => favorite.id === currCity.id) ? (
-                <button
+                <div
+                  className="btn"
                   type="submit"
-                  className="btn btn-danger"
-                  style={{ margin: "2px" }}
                   onClick={() => removeFavorite(currCity.id)}
                 >
-                  Remove from favorites
-                </button>
+                  Remove From Favorites
+                </div>
               ) : (
                 // ! Add if there is not.
-                <button
+                <div
+                  className="btn"
                   type="submit"
-                  className="btn btn-success"
-                  style={{ margin: "2px" }}
                   onClick={() =>
                     addFavorite(
                       currCity,
@@ -77,62 +78,45 @@ export default function HomePage({
                   }
                 >
                   Add to favorites
-                </button>
+                </div>
               )}
             </div>
           </div>
         </div>
-        <div
-          className="cards"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            margin: "10px",
-            padding: "10px",
-          }}
-        >
+
+        <ul className="current-weather">
           {/* // !  TODAY FORECAST */}
           {todaysForecast && currCity && (
             <React.Fragment>
-              <h2>{currCity.label}</h2>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignContent: "center",
-                  boxShadow: "2px 2px 10px",
-                  margin: "10px",
-                  padding: "5px",
-                  borderRadius: "10px",
-                }}
-              >
-                <h3 style={{ padding: "2.5px" }}>
-                  Max: {todaysForecast.Temperature.Maximum.Value - 32}&deg;
-                </h3>
-                <h3 style={{ padding: "2.5px" }}>
-                  Min: {todaysForecast.Temperature.Minimum.Value - 32}&deg;
-                </h3>
-              </div>
-              <h4>Day: {todaysForecast.Day.IconPhrase}</h4>
-              <h4>Night: {todaysForecast.Night.IconPhrase}</h4>
+              <li className="current-weather-item">
+                <h2>{currCity.label}</h2>
+              </li>
+              <li className="current-weather-item">
+                <div className="degrees">
+                  <span className="degrees-max">
+                    Max: {todaysForecast.Temperature.Maximum.Value - 32}&deg;
+                  </span>
+                  <span className="degrees-min">
+                    Min: {todaysForecast.Temperature.Minimum.Value - 32}&deg;
+                  </span>
+                </div>
+              </li>
+              <li className="current-weather-item">
+                <span>Day: {todaysForecast.Day.IconPhrase}</span>
+              </li>
+              <li className="current-weather-item">
+                <span>Night: {todaysForecast.Night.IconPhrase}</span>
+              </li>
             </React.Fragment>
           )}
-        </div>
-        <div>
-          <ul
-            style={{
-              listStyle: "none",
-              display: "flex",
-              justifyContent: "space-around",
-              margin: "0",
-              padding: "0",
-            }}
-          >
+        </ul>
+
+        <div className="five-days-weather__wrapper">
+          <ul className="five-days-weather__list">
             {daily.map(item => {
               const { Temperature, Date } = item;
               return (
-                <li style={{ textAlign: "center", padding: "5px" }}>
+                <li className="five-days__item">
                   <p>{Date.slice(0, 10)}</p>
                   <span>Max: {Temperature.Maximum.Value - 32}&deg;</span>
                   <br />
@@ -142,7 +126,7 @@ export default function HomePage({
             })}
           </ul>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

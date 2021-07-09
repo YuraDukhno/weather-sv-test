@@ -3,8 +3,9 @@ import { get5dayDailyForecast } from "./API";
 import { HashRouter as Router, Switch, Route} from "react-router-dom";
 import Favorites from "./Components/Favorites";
 import HomePage from "./Components/HomePage"
-import Header from "./Components/Header";
+import Header from "./Components/Header/index.jsx";
 import "./App.css";
+
 
 
 class App extends React.Component {
@@ -19,7 +20,7 @@ class App extends React.Component {
     this.getDaily();
   }
 
-  // ! Get daily forecast id by default 215854 label by default Tel Aviv.
+  // ! Get daily forecast. If input is empty take id by default 215854, label by default Tel Aviv.
   getDaily = async ({ id, label } = { id: "215854", label: "Tel Aviv" }) => {
     const data = await get5dayDailyForecast(id);
     this.setState({
@@ -30,6 +31,7 @@ class App extends React.Component {
 
   // ! Add to favorite.
   addFavorite = (location, currWeather) => {
+    // debugger
     const updatedFavorites = [
       ...this.state.favorites,
       { ...location, currWeather },
@@ -41,8 +43,9 @@ class App extends React.Component {
 
   // ! Remove from favorite.
   removeFavorite = id => {
+    debugger
     const updatedFavorites = [...this.state.favorites].filter(
-      favorite => favorite.id !== id
+      favorite => favorite.id !== id  
     );
     this.setState({
       favorites: updatedFavorites,
@@ -54,8 +57,6 @@ class App extends React.Component {
       <Router>
         <div className="App">
           <Header />
-          <div className="auth-wrapper">
-            <div className="auth-inner">
               <Switch>
                 <Route exact path="/">
                   <HomePage
@@ -74,8 +75,6 @@ class App extends React.Component {
                   />
                 </Route>
               </Switch>
-            </div>
-          </div>
         </div>
       </Router>
     );

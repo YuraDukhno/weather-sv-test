@@ -1,5 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import "../Components/Favorites.css";
 
 export default function Favorites({ favorites, getWeather }) {
   const history = useHistory();
@@ -10,30 +11,31 @@ export default function Favorites({ favorites, getWeather }) {
     await getWeather(favorite);
   };
   return (
-    <div>
-      <h3>Favorites</h3>
-      <div className="container-fluid">
-        {/* // ! Show cards depending on whether there is a city in favorites. */}
-        {/* // ! If there is a favorites. */}
-        {favorites.length ? (
-          <div>
-            {favorites.map(favorite => (
-              <button onClick={() => favoriteClickHandler(favorite)}>
-                <div className="card mb-2">
-                  <div className="card-body">
-                    <h5 className="card-title">{favorite.label}</h5>
-                    <p className="card-text">
-                      {favorite.currWeather - 32}&deg;
-                    </p>
-                  </div>
+    <div className="favorites">
+      <div className="container favorites__container">
+        <div className="favorites__title">
+          <h3 className="title">Favorites</h3>
+        </div>
+        <div className="cards__wrapper">
+          {/* // ! Show cards depending on whether there is a city in favorites. */}
+          {/* // ! If there is a favorites. */}
+          {favorites.length ? (
+            <div className="cards">
+              {favorites.map(favorite => (
+                <div
+                  className="btn"
+                  onClick={() => favoriteClickHandler(favorite)}
+                >
+                  <h5>{favorite.label}</h5>
+                  <p>{favorite.currWeather - 32}&deg;</p>
                 </div>
-              </button>
-            ))}
-          </div>
-        ) : (
-          // ! If not.
-          <div>No favorites added</div>
-        )}
+              ))}
+            </div>
+          ) : (
+            // ! If not.
+            <div className="no-favorites">No favorites added</div>
+          )}
+        </div>
       </div>
     </div>
   );

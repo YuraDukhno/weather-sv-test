@@ -1,30 +1,28 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import "../Header/index.css";
 
 const Header = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light fixed-top">
-      <div className="container">
-        <Link className="navbar-brand" to={"/"}>
-          Weather App
-        </Link>
-
-        <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
-          <ul className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to={"/"}>
-                Home
-              </Link>
+    <header className="header">
+      <div className="container header__container">
+        <div className="logo">
+          <h1 className="capture">
+            <Link to={"/"}>Weather App</Link>
+          </h1>
+        </div>
+        <nav className="navbar">
+          <ul className="nav__list">
+            <li className="nav__item">
+              <Link to={"/"}>Home</Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to={"/favorites"}>
-                Favorites
-              </Link>
+            <li className="nav__item">
+              <Link to={"/favorites"}>Favorites</Link>
             </li>
           </ul>
-        </div>
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 };
 

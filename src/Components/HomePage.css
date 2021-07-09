@@ -1,0 +1,80 @@
+.auto-complete__wrapper {
+  max-width: 250px;
+  margin: 0px auto;
+  padding: 10px;
+}
+
+.auto-complete__buttons {
+  display: flex;
+  justify-content: center;
+  /* padding: 10px; */
+}
+
+.btn {
+  font-family: Ubuntu;
+  background-color: rgb(57, 162, 219, 50%);
+  color: white;
+  line-height: 25px;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  /* border: 1px solid #292c2c; */
+  transition: ease-in-out 0.4s;
+  z-index: 1;
+}
+
+.btn:hover {
+  cursor: pointer;
+  /* color: #292c2c; */
+  background-color: unset;
+  background-color: rgb(57, 162, 219);
+  /* border: 1px solid #bcfdfd; */
+  z-index: 2;
+}
+
+.current-weather {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Montserrat;
+}
+
+.current-weather-item {
+  background-color: rgba(57, 162, 219, 0.404);
+  color: white;
+  width: 230px;
+  /* margin: 5px; */
+  padding: 15px;
+  text-align: center;
+  /* border-radius: 10px; */
+}
+
+.degrees {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h2 {
+  font-family: Ubuntu;
+}
+
+.five-days-weather__wrapper {
+  padding-top: 50px;
+}
+
+.five-days-weather__list {
+  display: flex;
+  justify-content: center;
+}
+
+.five-days__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: rgba(57, 162, 219, 0.404);
+  font-family: Ubuntu;
+  font-size: 16px;
+  color: white;
+}
